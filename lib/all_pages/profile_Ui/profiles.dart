@@ -1,0 +1,1 @@
+export 'pages_profile/profile.dart';
