@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../data/class.dart/list_services.dart';
+import 'package:myapp/data/class/bus_service.dart';
+import 'package:myapp/data/class/flight_services.dart';
+import 'package:myapp/data/class/hotel_service.dart';
+import 'package:myapp/data/class/train_service.dart';
+import '../../../data/class/list_services.dart';
 
 class ServicesPro extends StatelessWidget {
   // final Services services;
@@ -29,14 +33,14 @@ class ServicesPro extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(servicesAll[index].icone.icon, color: Colors.blue),
-                        Spacer(),
+                        const Spacer(),
                         Text(
                           servicesAll[index].name,
                           style: TextStyle(fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
                       ],
-                    )),
+                    ),),
               ],
             ),
           );
@@ -92,23 +96,16 @@ class MoreServices extends StatelessWidget {
                 ),
                 text: 'Bus',
               ),
-              Tab(
-                icon: Icon(
-                  Icons.directions_boat_rounded,
-                  color: Colors.blue.shade500,
-                ),
-                text: 'Boat',
-              ),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
             FlightPage(),
-            Text('Hotel'),
-            Text('Train'),
-            Text('Bus'),
-            Text('Boat'),
+            HotelPage(),
+            TrainPage(),
+            BusPage(),
+            // Text('Boat'),
           ],
         ),
       ),
@@ -117,6 +114,7 @@ class MoreServices extends StatelessWidget {
 }
 
 class FlightPage extends StatelessWidget {
+  // final Flight flight;
   const FlightPage({super.key});
 
   @override
@@ -147,8 +145,511 @@ class FlightPage extends StatelessWidget {
               ),
             ),
           ),
+          FlightCard(),
         ],
       ),
+    );
+  }
+}
+
+// LEs Details De SeeAll/ VoirPlus
+class FlightCard extends StatelessWidget {
+  const FlightCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: flightAll
+          .map(
+            (Flight) => GestureDetector(
+                onTap: () {
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16, left: 16),
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0),
+                          ),
+                          child: Image.network(
+                            Flight.imageUrls[0],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Flight.name,
+                                style: GoogleFonts.inter(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(Flight.lieu),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star,
+                                          color: Colors.blue.shade500),
+                                      Text(Flight.etoile),
+                                    ],
+                                  ),
+                                  Text(
+                                    Flight.price,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue.shade500,
+                                      ),
+                                      child: Text(
+                                        'Book Now',
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+          )
+          .toList(),
+    );
+  }
+}
+
+class HotelPage extends StatelessWidget {
+  // final Flight flight;
+  const HotelPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintStyle: const TextStyle(color: Colors.blueGrey),
+                  hintText: 'Rechercher un site touristique',
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.blue.shade500,
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          HotelCard(),
+        ],
+      ),
+    );
+  }
+}
+
+class HotelCard extends StatelessWidget {
+  const HotelCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: hoteltAll
+          .map(
+            (Hotels) => GestureDetector(
+                onTap: () {
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16, left: 16),
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0),
+                          ),
+                          child: Image.network(
+                            Hotels.imageUrls[0],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Hotels.name,
+                                style: GoogleFonts.inter(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(Hotels.lieu),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star,
+                                          color: Colors.blue.shade500),
+                                      Text(Hotels.etoile),
+                                    ],
+                                  ),
+                                  Text(
+                                    Hotels.price,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue.shade500,
+                                      ),
+                                      child: Text(
+                                        'Book Now',
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+          )
+          .toList(),
+    );
+  }
+}
+
+class TrainPage extends StatelessWidget {
+  // final Flight flight;
+  const TrainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintStyle: const TextStyle(color: Colors.blueGrey),
+                  hintText: 'Rechercher un site touristique',
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.blue.shade500,
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          TrainCard()
+        ],
+      ),
+    );
+  }
+}
+
+class TrainCard extends StatelessWidget {
+  const TrainCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: traintAll
+          .map(
+            (Trains) => GestureDetector(
+                onTap: () {
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16, left: 16),
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0),
+                          ),
+                          child: Image.network(
+                            Trains.imageUrls[0],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Trains.name,
+                                style: GoogleFonts.inter(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(Trains.lieu),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star,
+                                          color: Colors.blue.shade500),
+                                      Text(Trains.etoile),
+                                    ],
+                                  ),
+                                  Text(
+                                    Trains.price,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue.shade500,
+                                      ),
+                                      child: Text(
+                                        'Book Now',
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+          )
+          .toList(),
+    );
+  }
+}
+
+class BusPage extends StatelessWidget { 
+  // final Flight flight;
+  const BusPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintStyle: const TextStyle(color: Colors.blueGrey),
+                  hintText: 'Rechercher un site touristique',
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.blue.shade500,
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          BusCard(),
+        ],
+      ),
+    );
+  }
+}
+
+class BusCard extends StatelessWidget {
+  const BusCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: busAll
+          .map(
+            (BusService) => GestureDetector(
+                onTap: () {
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16, left: 16),
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0),
+                          ),
+                          child: Image.network(
+                            BusService.imageUrls[0],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                BusService.name,
+                                style: GoogleFonts.inter(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(BusService.lieu),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star,
+                                          color: Colors.blue.shade500),
+                                      Text(BusService.etoile),
+                                    ],
+                                  ),
+                                  Text(
+                                    BusService.price,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue.shade500,
+                                      ),
+                                      child: Text(
+                                        'Book Now',
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+          )
+          .toList(),
     );
   }
 }
