@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:myapp/essai.dart';
 // import 'package:myapp/anime.dart';
-import 'package:myapp/all_pages/utils.dart';
+// import 'package:myapp/all_pages/utils.dart';
+import 'package:myapp/forms/ui_forms/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MainNavigationPage(),
+      home: AuthForm(),
+      // MainNavigationPage(),
     );
   }
 }
