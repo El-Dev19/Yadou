@@ -1,7 +1,13 @@
+// ignore_for_file: avoid_print, duplicate_ignore
+
 import 'package:flutter/material.dart';
 
+
 class AuthForm extends StatefulWidget {
+  const AuthForm({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _AuthFormState createState() => _AuthFormState();
 }
 
@@ -13,7 +19,8 @@ class _AuthFormState extends State<AuthForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _isLogin = true; // Mode actuel (connexion ou inscription)
+  bool _isLogin = true;
+  bool _isLoading = false; // Mode actuel (connexion ou inscription)
 
   void _toggleFormMode() {
     setState(() {
@@ -24,6 +31,7 @@ class _AuthFormState extends State<AuthForm> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       if (_isLogin) {
+        // ignore: avoid_print
         print("Connexion...");
         print("Email: ${_emailController.text}");
         print("Mot de passe: ${_passwordController.text}");
@@ -55,7 +63,7 @@ class _AuthFormState extends State<AuthForm> {
               if (!_isLogin)
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Nom complet'),
+                  decoration: const InputDecoration(labelText: 'Nom complet'),
                   validator: (value) {
                     if (!_isLogin && (value == null || value.isEmpty)) {
                       return 'Veuillez entrer votre nom';
@@ -63,10 +71,10 @@ class _AuthFormState extends State<AuthForm> {
                     return null;
                   },
                 ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Adresse email'),
+                decoration: const InputDecoration(labelText: 'Adresse email'),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -78,10 +86,10 @@ class _AuthFormState extends State<AuthForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Mot de passe'),
+                decoration: const InputDecoration(labelText: 'Mot de passe'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -93,19 +101,40 @@ class _AuthFormState extends State<AuthForm> {
                   return null;
                 },
               ),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text(_isLogin ? 'Se connecter' : "S'inscrire"),
-              ),
-              TextButton(
-                onPressed: _toggleFormMode,
-                child: Text(
-                  _isLogin
-                      ? "Pas encore de compte ? S'inscrire"
-                      : 'Déjà un compte ? Se connecter',
-                ),
-              ),
+              const SizedBox(height: 32),
+              // ElevatedButton(
+              //   onPressed: _submitForm,
+              //   child: Text(_isLogin ? 'Se connecter' : "S'inscrire"),
+              // ),
+              // TextButton(
+              //   onPressed: _toggleFormMode,
+              //   child: Text(
+              //     _isLogin
+              //         ? "Pas encore de compte ? S'inscrire"
+              //         : 'Déjà un compte ? Se connecter',
+              //   ),
+              // ),
+            _isLoading
+                              ? const CircularProgressIndicator()
+                              : ElevatedButton(
+                                  onPressed: _submitForm,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                  ),
+                                  child: Text(_isLogin ? 'Login' : 'Signup'),
+                                ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _isLogin = !_isLogin;
+                              });
+                            },
+                            child: Text(_isLogin
+                                ? 'Create an account'
+                                : 'I already have an account'),
+                          ),
             ],
           ),
         ),
@@ -113,3 +142,5 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 }
+
+
