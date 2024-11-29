@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 // Inscription d'un utilisateur
-Future<void> signUp(String email, String password) async {
+Future<void> signUp({required String email, required String password}) async {
   try {
     UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
@@ -12,7 +12,7 @@ Future<void> signUp(String email, String password) async {
 }
 
 //Connexion d'un utilisateur
-Future<void> signIn(String email, String password) async {
+Future<void> signIn({required String email, required String password}) async {
   try {
     UserCredential userCredential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
@@ -21,6 +21,7 @@ Future<void> signIn(String email, String password) async {
     print("Erreur de connexion : $e");
   }
 }
+
 
 // Deconnexion d'un utilisateur
 Future<void> signOut() async {

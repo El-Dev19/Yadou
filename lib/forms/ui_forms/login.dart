@@ -1,13 +1,10 @@
-// ignore_for_file: avoid_print, duplicate_ignore
-
 import 'package:flutter/material.dart';
-
+import '../forms.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AuthFormState createState() => _AuthFormState();
 }
 
@@ -28,24 +25,54 @@ class _AuthFormState extends State<AuthForm> {
     });
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      if (_isLogin) {
-        // ignore: avoid_print
-        print("Connexion...");
-        print("Email: ${_emailController.text}");
-        print("Mot de passe: ${_passwordController.text}");
-      } else {
-        print("Inscription...");
-        print("Nom: ${_nameController.text}");
-        print("Email: ${_emailController.text}");
-        print("Mot de passe: ${_passwordController.text}");
-      }
+  void _showSnackbar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text),
+      duration: const Duration(seconds: 5),
+    ));
+  }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_isLogin ? 'Connexion réussie !' : 'Inscription réussie !')),
-      );
+  void _submitForm() {
+    // if (_formKey.currentState!.validate()) {
+    //   if (_isLogin) {
+    //     // ignore: avoid_print
+    //     print("Connexion...");
+    //     print("Email: ${_emailController.text}");
+    //     print("Mot de passe: ${_passwordController.text}");
+    //   } else {
+    //     print("Inscription...");
+    //     print("Nom: ${_nameController.text}");
+    //     print("Email: ${_emailController.text}");
+    //     print("Mot de passe: ${_passwordController.text}");
+    //   }
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      _showSnackbar("email or password  is empty");
+      return;
     }
+
+    // if (_selectedImage == null && !_isLogin) {
+    //   _showSnackbar("Please pick an image");
+    //   return;
+    // }
+
+    if (_isLogin) {
+      signIn(email: email, password: password);
+      // signIn(email: email, password: password);
+      return;
+    }
+    signUp(email: email, password: password);
+
+    setState(() {
+      _isLoading = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content:
+              Text(_isLogin ? 'Connexion réussie !' : 'Inscription réussie !')),
+    );
   }
 
   @override
@@ -114,27 +141,24 @@ class _AuthFormState extends State<AuthForm> {
               //         : 'Déjà un compte ? Se connecter',
               //   ),
               // ),
-            _isLoading
-                              ? const CircularProgressIndicator()
-                              : ElevatedButton(
-                                  onPressed: _submitForm,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                  ),
-                                  child: Text(_isLogin ? 'Login' : 'Signup'),
-                                ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                              });
-                            },
-                            child: Text(_isLogin
-                                ? 'Create an account'
-                                : 'I already have an account'),
-                          ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                      ),
+                      child: Text(_isLogin ? 'SignIn' : 'Signup'),
+                    ),
+              TextButton(
+                onPressed: () {
+                  _toggleFormMode();
+                },
+                child: Text(_isLogin
+                    ? 'Create an account'
+                    : 'I already have an account'),
+              ),
             ],
           ),
         ),
