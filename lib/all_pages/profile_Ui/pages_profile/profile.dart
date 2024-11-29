@@ -36,7 +36,7 @@ class ProfilePage extends StatelessWidget {
                           TextButton(
                             child: Text('Oui'),
                             onPressed: () {
-                              signOut(); // Ferme le dialogue
+                              signOut();// Ferme le dialogue
                             },
                           ),
                         ],
