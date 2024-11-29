@@ -1,26 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
-// Inscription d'un utilisateur
-Future<void> signUp({required String email, required String password}) async {
-  try {
-    UserCredential userCredential = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
-    print("Utilisateur inscrit : ${userCredential.user?.email}");
-  } catch (e) {
-    print("Erreur d'inscription : $e");
-  }
-}
-
-//Connexion d'un utilisateur
-Future<void> signIn({required String email, required String password}) async {
-  try {
-    UserCredential userCredential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-    print("Utilisateur connecté : ${userCredential.user?.email}");
-  } catch (e) {
-    print("Erreur de connexion : $e");
-  }
-}
+// import 'package:flutter/material.dart';
 
 
 // Deconnexion d'un utilisateur
@@ -80,7 +59,7 @@ Future<void> updateProfile(String displayName, String photoURL) async {
   }
 }
 
-// Suppression d'un utilisateur 
+// Suppression d'un utilisateur
 //Supprimez l'utilisateur actuel avec delete.
 Future<void> deleteUser() async {
   try {
@@ -106,29 +85,3 @@ void getUserDetails() {
     print("Aucun utilisateur connecté");
   }
 }
-
-// Gestion des erreurs Courantes
-/* Les erreurs retournées par Firebase Auth incluent des codes spécifiques. 
-   Vous pouvez les gérer pour offrir des retours utilisateurs plus clairs.*/
-Future<void> signInTry(String email, String password) async {
-  try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    print("Connexion réussie !");
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      print("Aucun utilisateur trouvé pour cet email.");
-    } else if (e.code == 'wrong-password') {
-      print("Mot de passe incorrect.");
-    } else {
-      print("Erreur : ${e.message}");
-    }
-  }
-}
-
-
-
-
-
