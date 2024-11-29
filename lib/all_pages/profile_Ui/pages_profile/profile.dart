@@ -18,7 +18,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () async {
-                if (signOut == true) {
+                if (signOut != null) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -36,7 +36,7 @@ class ProfilePage extends StatelessWidget {
                           TextButton(
                             child: Text('Oui'),
                             onPressed: () {
-                              Navigator.of(context).pop(); // Ferme le dialogue
+                              signOut(); // Ferme le dialogue
                             },
                           ),
                         ],
