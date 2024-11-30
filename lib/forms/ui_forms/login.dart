@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import '../forms.dart';
@@ -26,52 +27,170 @@ class _AuthFormState extends State<AuthForm> {
 
   void signInTry({required String email, required String password}) async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
+      // Validation préalable des entrées
+      if (email.isEmpty || password.isEmpty) {
+        _showSnackbar("Veuillez saisir un email et un mot de passe");
+        return;
+      }
+
+      // Mise à jour de l'état de chargement
+      setState(() => _isLoading = true);
+
+      // Tentative de connexion
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // print(credential);
-      _showSnackbar("Logged ");
-      print("Connexion réussie !");
+
+      // Connexion réussie
+      _showSnackbar("Connexion réussie");
+      // Navigation ou action post-connexion
+      // Navigator.pushReplacement(context, MaterialPageRoute(...));
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        _showSnackbar("No user found for that email.");
-        print("Aucun utilisateur trouvé pour cet email.");
-      } else if (e.code == 'wrong-password') {
-        _showSnackbar('Incorrect password provided for that user.');
-        print('Mot de passe incorrect pour cet utilisateur.');
-      } else {
-        print(e);
-        _showSnackbar(e.toString());
-        print("Erreur : ${e.message}");
+      // Gestion détaillée des exceptions Firebase
+      switch (e.code) {
+        case 'user-not-found':
+          _showSnackbar("Aucun compte n'existe avec cet email");
+          break;
+        case 'wrong-password':
+          _showSnackbar("Email ou Mot de Passe incorrect");
+          break;
+        case 'invalid-email':
+          _showSnackbar("Format d'email invalide");
+          break;
+        case 'user-disabled':
+          _showSnackbar("Ce compte a été désactivé");
+          break;
+        case 'too-many-requests':
+          _showSnackbar("Trop de tentatives. Réessayez plus tard");
+          break;
+        default:
+          // Logging de l'erreur pour le développement
+          print('Erreur de connexion non gérée : ${e.code}');
+          _showSnackbar("Une erreur de connexion est survenue");
       }
-    } catch (e) {
-      _showSnackbar(e.toString());
+    } on Exception catch (e) {
+      // Gestion des exceptions génériques
+      _showSnackbar("Une erreur inattendue est survenue");
+      print('Erreur inattendue : $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      // Réinitialisation de l'état de chargement
+      setState(() => _isLoading = false);
     }
   }
 
-// Inscription d'un utilisateur
-  void signUp({required String email, required String password}) async {
-    setState(() {
-      _isLoading = true;
-    });
+// // Inscription d'un utilisateur
+//   void signUp({required String email, required String password}) async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+//     try {
+//       final credential = await FirebaseAuth.instance
+//           .createUserWithEmailAndPassword(email: email, password: password);
+//       print(credential);
+//       _showSnackbar('Your account has been created.');
+//       print("Utilisateur inscrit : ${credential.user?.email}");
+//     } catch (e) {
+//       print("Erreur d'inscription : $e");
+//     }
+//   }
+
+void signUp({required String email, required String password}) async {
+  // Validation préalable
+  if (!_validateInputs(email, password)) return;
+
+  setState(() => _isLoading = true);
+
+  try {
+    // Vérification supplémentaire de l'email
+    if (!_isValidEmailFormat(email)) {
+      _showSnackbar('Format d\'email invalide');
+      return;
+    }
+
+    // Vérification de la force du mot de passe
+    if (!_isStrongPassword(password)) {
+      _showSnackbar('Mot de passe trop faible. Il doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.');
+      return;
+    }
+
+    // Tentative d'inscription
+    final credential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+
+    // Envoi éventuel d'un email de vérification
+    await credential.user?.sendEmailVerification();
+
+    // Création du profil utilisateur dans Firestore (optionnel)
+    await _createUserProfile(credential.user);
+
+    // Feedback utilisateur
+    _showSnackbar('Votre compte a été créé. Veuillez vérifier votre email.');
+    
+    // Navigation ou action post-inscription
+    // Navigator.pushReplacement(context, MaterialPageRoute(...));
+
+  } on FirebaseAuthException catch (e) {
+    // Gestion détaillée des exceptions Firebase
+    switch (e.code) {
+      case 'weak-password':
+        _showSnackbar('Le mot de passe est trop faible');
+        break;
+      case 'email-already-in-use':
+        _showSnackbar('Un compte existe déjà avec cet email');
+        break;
+      case 'invalid-email':
+        _showSnackbar('Format d\'email invalide');
+        break;
+      case 'operation-not-allowed':
+        _showSnackbar('Inscription temporairement désactivée');
+        break;
+      default:
+        _showSnackbar('Erreur d\'inscription. Réessayez.');
+        print('Erreur Firebase non gérée : ${e.code}');
+    }
+  } on Exception catch (e) {
+    // Gestion des exceptions génériques
+    _showSnackbar('Une erreur inattendue est survenue');
+    print('Erreur inattendue lors de l\'inscription : $e');
+  } finally {
+    // Réinitialisation de l'état de chargement
+    setState(() => _isLoading = false);
+  }
+}
+
+// Méthodes de validation supplémentaires
+bool _validateInputs(String email, String password) {
+  if (email.isEmpty || password.isEmpty) {
+    _showSnackbar('Veuillez remplir tous les champs');
+    return false;
+  }
+  return true;
+}
+
+bool _isValidEmailFormat(String email) {
+  return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+}
+
+bool _isStrongPassword(String password) {
+  return RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+      .hasMatch(password);
+}
+
+Future<void> _createUserProfile(User? user) async {
+  if (user != null) {
     try {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      print(credential);
-      _showSnackbar('Your account has been created.');
-      print("Utilisateur inscrit : ${credential.user?.email}");
+      // Exemple avec Firestore
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'email': user.email,
+        'createdAt': FieldValue.serverTimestamp(),
+        // Autres informations du profil
+      });
     } catch (e) {
-      print("Erreur d'inscription : $e");
+      print('Erreur lors de la création du profil utilisateur : $e');
     }
   }
+}
 
   void _toggleFormMode() {
     setState(() {
@@ -195,7 +314,13 @@ class _AuthFormState extends State<AuthForm> {
               //   ),
               // ),
               _isLoading
-                  ? const CircularProgressIndicator()
+                  ? Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: const CircularProgressIndicator())
                   : ElevatedButton(
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(

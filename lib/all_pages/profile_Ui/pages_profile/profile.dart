@@ -36,7 +36,8 @@ class ProfilePage extends StatelessWidget {
                           TextButton(
                             child: Text('Oui'),
                             onPressed: () {
-                              signOut();// Ferme le dialogue
+                              signOut(); // Ferme le dialogue
+                              Navigator.of(context).pop();
                             },
                           ),
                         ],
@@ -44,9 +45,6 @@ class ProfilePage extends StatelessWidget {
                     },
                   );
                 }
-                // signOut();
-                // await FirebaseAuth.instance.signOut();
-                // print("Déconnecté");
               },
               child: const Text("Déconnexion"),
             ),
