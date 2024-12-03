@@ -57,7 +57,7 @@ class AuthStateScreen extends StatelessWidget {
           return MainNavigationPage();
         } else {
           // Utilisateur déconnecté
-          return const AuthForm();
+          return AuthForm();
         }
       },
     );
