@@ -1,8 +1,8 @@
+// ignore_for_file: library_private_types_in_public_api
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:myapp/forms/forms.dart';
-// import '../forms.dart';
+import 'package:myapp/forms/forms.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({super.key});
@@ -18,7 +18,7 @@ class _AuthFormState extends State<AuthForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  bool _isObscureCurrentPassword = true;
   bool _isLogin = true;
   bool _isLoading = false; // Mode actuel (connexion ou inscription)
 
@@ -103,10 +103,11 @@ class _AuthFormState extends State<AuthForm> {
       // Tentative d'inscription
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-
+      // Langue de l'email envoyé
+      await FirebaseAuth.instance.setLanguageCode("fr");
       // Envoi éventuel d'un email de vérification
       await credential.user?.sendEmailVerification();
-      
+
       // Création du profil utilisateur dans Firestore (optionnel)
       await _createUserProfile(credential.user);
       // Feedback utilisateur
@@ -115,7 +116,7 @@ class _AuthFormState extends State<AuthForm> {
       // Navigator.pushReplacement(context, MaterialPageRoute(...));
       // Rediriger vers l'écran de vérification d'email
       // Navigator.pushReplacement(
-      //   context, 
+      //   context,
       //   MaterialPageRoute(
       //     builder: (context) => EmailVerificationScreen(user: credential.user!)
       //   )
@@ -231,11 +232,11 @@ class _AuthFormState extends State<AuthForm> {
     setState(() {
       _isLoading = false;
     });
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //       content:
-    //           Text(_isLogin ? 'Connexion réussie !' : 'Inscription réussie !')),
-    // );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content:
+              Text(_isLogin ? 'Connexion réussie !' : 'Inscription réussie !')),
+    );
   }
 
   @override
@@ -253,7 +254,13 @@ class _AuthFormState extends State<AuthForm> {
               if (!_isLogin)
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Nom complet'),
+                  decoration: InputDecoration(
+                    labelText: 'Nom complet',
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   validator: (value) {
                     if (!_isLogin && (value == null || value.isEmpty)) {
                       return 'Veuillez entrer votre nom';
@@ -264,7 +271,13 @@ class _AuthFormState extends State<AuthForm> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Adresse email'),
+                decoration: InputDecoration(
+                  labelText: 'Adresse email',
+                  prefixIcon: const Icon(Icons.email_rounded),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -279,31 +292,41 @@ class _AuthFormState extends State<AuthForm> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Mot de passe'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer un mot de passe';
-                  }
-                  if (value.length < 6) {
-                    return 'Le mot de passe doit contenir au moins 6 caractères';
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(
+                  labelText: 'Mot de passe',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: const Icon(Icons.lock_clock_rounded),
+                  suffixIcon: IconButton(
+                    icon: Icon(_isObscureCurrentPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _isObscureCurrentPassword = !_isObscureCurrentPassword;
+                      });
+                    },
+                  ),
+                ),
+                obscureText: _isObscureCurrentPassword,
               ),
-              const SizedBox(height: 32),
-              // ElevatedButton(
-              //   onPressed: _submitForm,
-              //   child: Text(_isLogin ? 'Se connecter' : "S'inscrire"),
-              // ),
-              // TextButton(
-              //   onPressed: _toggleFormMode,
-              //   child: Text(
-              //     _isLogin
-              //         ? "Pas encore de compte ? S'inscrire"
-              //         : 'Déjà un compte ? Se connecter',
-              //   ),
-              // ),
+              // const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PasswordResetScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text("Mot de passe oublié"))
+                ],
+              ),
               _isLoading
                   ? Container(
                       height: 50,

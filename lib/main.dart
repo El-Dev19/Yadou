@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/all_pages/screens_home/home_page.dart';
 import 'package:myapp/firebase_options.dart';
+import 'package:myapp/forms/forms.dart';
 import 'package:myapp/forms/ui_forms/login.dart';
 
 void main() async {
@@ -36,7 +37,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const AuthStateScreen(),
+      home:
+          // PasswordResetScreen(),
+          const AuthStateScreen(),
     );
   }
 }

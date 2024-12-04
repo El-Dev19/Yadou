@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gap/gap.dart';
 import 'package:myapp/forms/forms.dart';
+import 'package:myapp/forms/gestion_user/users/delete_code.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -97,6 +101,56 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               child: const Text("Déconnexion"),
             ),
+            const Gap(10),
+            ElevatedButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Changer de mot de passe"),
+                      content: const Text(
+                          'Etes vous sur de vouloir changer de mot de passe ?'),
+                      actions: [
+                        TextButton(
+                          child: const Text('Non'),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Ferme le dialogue
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Oui'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ChangePasswordScreen(),
+                              ),
+                            );
+                            // Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Text("Changer de Mot de passe"),
+            ),
+            DeleteUser(),
+            // ElevatedButton.icon(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const DeleteUser(),
+            //       ),
+            //     );
+            //   },
+            //   label: Text('Supprimer'),
+            //   icon: Icon(Icons.delete),
+            // )
           ],
         ),
       ),

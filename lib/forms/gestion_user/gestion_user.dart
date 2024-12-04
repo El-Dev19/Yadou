@@ -1,2 +1,3 @@
 export 'users/login_out.dart';
-export 'users/email_auth.dart';
+export 'users/update_code.dart';
+export 'users/reset_code.dart';
