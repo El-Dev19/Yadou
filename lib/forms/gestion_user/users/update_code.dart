@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:myapp/all_pages/utils.dart';
+import 'package:go_router/go_router.dart'; // Assurez-vous d'avoir importé go_router.
 
-// Exemple d'utilisation dans un écran de changement de mot de passe
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
 
@@ -26,86 +25,77 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user == null) {
-        // Gérer le cas où aucun utilisateur n'est connecté
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Aucun utilisateur connecté')));
+          const SnackBar(content: Text('Aucun utilisateur connecté')),
+        );
         return false;
       }
 
-      // Étape cruciale : réauthentifier l'utilisateur
-      // Ceci est nécessaire pour les changements de mot de passe récents
+      // Réauthentification de l'utilisateur
       AuthCredential credential = EmailAuthProvider.credential(
-          email: user.email!, password: currentPassword);
+        email: user.email!,
+        password: currentPassword,
+      );
 
       try {
-        // Réauthentification
         await user.reauthenticateWithCredential(credential);
       } on FirebaseAuthException catch (reauthError) {
-        // Gérer les erreurs de réauthentification
         String errorMessage = 'Erreur de réauthentification';
-        switch (reauthError.code) {
-          case 'wrong-password':
-            errorMessage = 'Mot de passe actuel incorrect';
-            break;
-          case 'user-mismatch':
-            errorMessage = 'Les identifiants ne correspondent pas';
-            break;
+        if (reauthError.code == 'wrong-password') {
+          errorMessage = 'Mot de passe actuel incorrect';
         }
-
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(errorMessage)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
         return false;
       }
 
       // Validation du nouveau mot de passe
       if (!_isStrongPassword(newPassword)) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Le nouveau mot de passe est trop faible. '
-                'Il doit contenir au moins 8 caractères, '
-                'une majuscule, un chiffre et un caractère spécial.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.'),
+          ),
+        );
         return false;
       }
 
       // Mise à jour du mot de passe
       await user.updatePassword(newPassword);
 
-      // Feedback utilisateur
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Mot de passe mis à jour avec succès'),
-        backgroundColor: Colors.green,
-      ));
+      // Affichage du succès et redirection
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Mot de passe changé avec succès !'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Redirection vers la page principale (ou autre route)
+      context.go('/home'); // Redirige l'utilisateur
 
       return true;
     } on FirebaseAuthException catch (e) {
-      // Gestion des exceptions Firebase
       String errorMessage = 'Erreur de mise à jour du mot de passe';
-
-      switch (e.code) {
-        case 'requires-recent-login':
-          errorMessage =
-              'Veuillez vous reconnecter pour modifier le mot de passe';
-          break;
-        case 'weak-password':
-          errorMessage = 'Le nouveau mot de passe est trop faible';
-          break;
+      if (e.code == 'requires-recent-login') {
+        errorMessage =
+            'Veuillez vous reconnecter pour modifier le mot de passe';
+      } else if (e.code == 'weak-password') {
+        errorMessage = 'Le nouveau mot de passe est trop faible';
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(errorMessage),
-        backgroundColor: Colors.red,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
       return false;
     } catch (e) {
-      // Gestion des erreurs génériques
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Une erreur inattendue est survenue'),
-        backgroundColor: Colors.red,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Une erreur inattendue est survenue')),
+      );
       return false;
     }
   }
 
-// Méthode de validation du mot de passe (à intégrer dans votre classe)
   bool _isStrongPassword(String password) {
     return RegExp(
             r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
@@ -125,7 +115,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           key: _formKey,
           child: Column(
             children: [
-              // Champ mot de passe actuel
               TextFormField(
                 controller: _currentPasswordController,
                 decoration: InputDecoration(
@@ -149,9 +138,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
-
-              // Champ nouveau mot de passe
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _newPasswordController,
                 decoration: InputDecoration(
@@ -178,9 +165,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
-
-              // Confirmation du nouveau mot de passe
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
@@ -204,24 +189,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 24),
-
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    bool success = await updatePassword(
-                        currentPassword: _currentPasswordController.text,
-                        newPassword: _newPasswordController.text);
-
-                    if (success) {
-                      // Optionnel : naviguer ou effacer les champs
-                      _currentPasswordController.clear();
-                      _newPasswordController.clear();
-                      _confirmPasswordController.clear();
-                    }
+                    await updatePassword(
+                      currentPassword: _currentPasswordController.text,
+                      newPassword: _newPasswordController.text,
+                    );
                   }
                 },
-                child: Text('Changer le mot de passe'),
+                child: const Text('Changer le mot de passe'),
               ),
             ],
           ),
