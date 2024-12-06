@@ -9,7 +9,7 @@ Future<void> signOut() async {
   try {
     await FirebaseAuth.instance.signOut();
     print("Utilisateur déconnecté");
-  } catch (e) {
+  } catch (e) { 
     print("Erreur de déconnexion : $e");
   }
 }

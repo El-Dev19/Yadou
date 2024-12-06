@@ -43,14 +43,44 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gestion des utilisateurs"),
+        title: const Text("Profile User"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (_user != null) ...[
+                const CircleAvatar(
+                  backgroundImage: AssetImage("assets/images/profile2.webp"),
+                ),
+                const Gap(10),
+                Text(
+                  _user?.email ?? 'Email inconnu',
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                // const Gap(8),
+                const Card(
+                  margin: EdgeInsets.all(16),
+                  elevation: 4,
+                  child: ListTile(
+                    leading: Icon(Icons.edit),
+                    title: Text("Edit Profile"),
+                    trailing: Icon(Icons.arrow_forward_ios_rounded),
+                  ),
+                ),
+                const Gap(16),
+                const Card(
+                  margin: EdgeInsets.all(16),
+                  elevation: 4,
+                  child: ListTile(
+                    leading: Icon(Icons.edit),
+                    title: Text("Paramètres"),
+                    trailing: Icon(Icons.settings),
+                  ),
+                ),
                 Card(
                   margin: const EdgeInsets.all(16),
                   elevation: 4,
@@ -59,19 +89,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //           // Afficher les informations utilisateur
-                        // Text(
-                        //   'Bienvenue, ${currentUser?.email ?? "Utilisateur"}',
-                        //   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        // ),
-                        // const SizedBox(height: 16),
-
-                        // // Autres informations de profil
-                        // ListTile(
-                        //   leading: const Icon(Icons.email),
-                        //   title: Text(currentUser?.email ?? 'Email inconnu'),
-                        //   subtitle: const Text('Adresse e-mail'),
-                        // ),
                         Text(
                           "Détails de l'utilisateur :",
                           style: Theme.of(context).textTheme.titleLarge,

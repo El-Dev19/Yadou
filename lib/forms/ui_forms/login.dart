@@ -68,7 +68,7 @@ class _AuthFormState extends State<AuthForm> {
         default:
           // Logging de l'erreur pour le développement
           print('Erreur de connexion non gérée : ${e.code}');
-          _showSnackbar("Votre Email Ou Mot de Passe est invalide !");
+          _showSnackbar("Erreur de connexion. Veuillez réessayer !");
       }
     } on Exception catch (e) {
       // Gestion des exceptions génériques
@@ -320,7 +320,7 @@ class _AuthFormState extends State<AuthForm> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const PasswordResetScreen(),
+                            builder: (context) => PasswordResetScreen(),
                           ),
                         );
                       },
