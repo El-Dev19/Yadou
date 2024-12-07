@@ -73,7 +73,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       );
 
       // Redirection vers la page principale (ou autre route)
-      context.go('/home'); // Redirige l'utilisateur
+      context.pushReplacement('/profile'); // Redirige l'utilisateur
 
       return true;
     } on FirebaseAuthException catch (e) {

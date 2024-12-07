@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myapp/all_pages/profile_Ui/pages_profile/profile.dart'; 
+import 'package:myapp/all_pages/profile_Ui/pages_profile/profile.dart';
 import 'package:myapp/all_pages/screens_home/home_page.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/forms/forms.dart';
@@ -62,11 +62,6 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfilePage(),
-    ),
-
-    GoRoute(
-      path: '/change-password',
-      builder: (context, state) => ChangePasswordScreen(),
     ),
   ],
   redirect: (context, state) {
