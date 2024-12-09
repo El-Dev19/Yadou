@@ -259,6 +259,7 @@ class _AuthFormState extends State<AuthForm> {
                     prefixIcon: const Icon(Icons.person),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   validator: (value) {
@@ -320,7 +321,7 @@ class _AuthFormState extends State<AuthForm> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PasswordResetScreen(),
+                            builder: (context) => const PasswordResetScreen(),
                           ),
                         );
                       },
@@ -335,9 +336,9 @@ class _AuthFormState extends State<AuthForm> {
                         borderRadius: BorderRadius.circular(25),
                       ),
                       child: const Center(child: CircularProgressIndicator()))
-                  : ElevatedButton(
+                  : OutlinedButton(
                       onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                         backgroundColor:
                             Theme.of(context).colorScheme.primaryContainer,
                       ),

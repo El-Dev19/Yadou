@@ -119,6 +119,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 controller: _currentPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Mot de passe actuel',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(_isObscureCurrentPassword
                         ? Icons.visibility
@@ -143,6 +146,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 controller: _newPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Nouveau mot de passe',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(_isObscureNewPassword
                         ? Icons.visibility
@@ -170,6 +176,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Confirmer le nouveau mot de passe',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(_isObscureConfirmPassword
                         ? Icons.visibility
@@ -190,7 +199,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     await updatePassword(

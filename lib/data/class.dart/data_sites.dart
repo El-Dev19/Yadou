@@ -5,6 +5,7 @@ class Sites {
   final String etoile;
   final String lieu;
   final List<String> imageUrls;
+  bool isFavorite;
 
   Sites({
     required this.name,
@@ -13,6 +14,7 @@ class Sites {
     required this.etoile,
     required this.lieu,
     required this.imageUrls,
+    this.isFavorite = false,
   });
 }
 

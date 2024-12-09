@@ -4,9 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/data/data.dart';
 // import 'package:myapp/pages/utils.dart';
 
-class SitesPopulaires extends StatelessWidget {
+class SitesPopulaires extends StatefulWidget {
   const SitesPopulaires({super.key});
 
+  @override
+  State<SitesPopulaires> createState() => _SitesPopulairesState();
+}
+
+class _SitesPopulairesState extends State<SitesPopulaires> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -52,24 +57,11 @@ class SitesPopulaires extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Positioned(
+                        // Debut Bouton
                         top: 10,
                         right: 10,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Icon(
-                              Icons.favorite_border,
-                              color: Colors.blue.shade500,
-                            ),
-                          ),
-                        ),
-                      ),
+                        child: FavoriteButton(site: site),
+                      ), // Bootuon favorite
                       Positioned(
                         bottom: 0,
                         left: 0,
@@ -131,7 +123,9 @@ class DetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            AnimeImages(site: site,),
+            AnimeImages(
+              site: site,
+            ),
             // Container(
             //   height: 200,
             //   child: ListView.builder(
@@ -174,28 +168,9 @@ class DetailPage extends StatelessWidget {
                     children: [
                       Material(
                         elevation: 5,
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          height: 50,
-                          // width: MediaQuery.of(context).size.width/0.2,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset:
-                                    Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.blue.shade500,
-                            ),
-                          ),
+                        // borderRadius: BorderRadius.circular(10),
+                        child: CircleAvatar(
+                          child: FavoriteButton(site: site),
                         ),
                       ),
                       const Spacer(),
@@ -279,7 +254,7 @@ class _AnimeImagesState extends State<AnimeImages> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                      image: NetworkImage(siteUrls[index]),
+                      image: NetworkImage(siteUrls[0]),
                       fit: BoxFit.fill,
                     ),
                     boxShadow: const [
@@ -317,6 +292,7 @@ class _AnimeImagesState extends State<AnimeImages> {
       ),
     );
   }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -437,6 +413,40 @@ class MoreMostVisited extends StatelessWidget {
                     )),
               )
               .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class FavoriteButton extends StatelessWidget {
+  const FavoriteButton({super.key, required this.site});
+  final Sites site;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        site.isFavorite = !site.isFavorite;
+
+        // Afficher un snackbar de confirmation
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(site.isFavorite
+                ? '${site.name} ajouté aux favoris'
+                : '${site.name} retiré des favoris'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.7),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          site.isFavorite ? Icons.favorite : Icons.favorite_border,
+          color: Colors.blue.shade500,
         ),
       ),
     );
