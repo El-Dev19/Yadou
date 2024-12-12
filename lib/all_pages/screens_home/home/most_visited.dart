@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -419,33 +421,100 @@ class MoreMostVisited extends StatelessWidget {
   }
 }
 
-class FavoriteButton extends StatelessWidget {
+
+class FavoriteButton extends StatefulWidget {
   const FavoriteButton({super.key, required this.site});
   final Sites site;
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        site.isFavorite = !site.isFavorite;
 
-        // Afficher un snackbar de confirmation
+  @override
+  State<FavoriteButton> createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State<FavoriteButton> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _toggleFavorite() async {
+    try {
+      // Vérifier si l'utilisateur est connecté
+      User? user = _auth.currentUser;
+      if (user == null) {
+        // Gérer le cas où l'utilisateur n'est pas connecté
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(site.isFavorite
-                ? '${site.name} ajouté aux favoris'
-                : '${site.name} retiré des favoris'),
+          const SnackBar(
+            content: Text('Veuillez vous connecter pour ajouter aux favoris'),
             duration: Duration(seconds: 2),
           ),
         );
-      },
+        return;
+      }
+
+      // Référence à la collection des favoris de l'utilisateur
+      DocumentReference userFavoritesRef = _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorite')
+          .doc(widget.site.name);
+
+      // Inverser l'état des favoris
+      setState(() {
+        widget.site.isFavorite = !widget.site.isFavorite;
+      });
+
+      if (widget.site.isFavorite) {
+        // Ajouter aux favoris
+        await userFavoritesRef.set({
+          'name': widget.site.name,
+          'description': widget.site.description,
+          'price': widget.site.price,
+          'etoile': widget.site.etoile,
+          'lieu': widget.site.lieu,
+          'imageUrls': widget.site.imageUrls,
+          'addedAt': FieldValue.serverTimestamp(),
+        });
+
+        // Afficher un message de confirmation
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${widget.site.name} ajouté aux favoris'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else {
+        // Supprimer des favoris
+        await userFavoritesRef.delete();
+
+        // Afficher un message de confirmation
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${widget.site.name} retiré des favoris'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      // Gérer les erreurs
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur : ${e.toString()}'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _toggleFavorite,
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.7),
           shape: BoxShape.circle,
         ),
         child: Icon(
-          site.isFavorite ? Icons.favorite : Icons.favorite_border,
+          widget.site.isFavorite ? Icons.favorite : Icons.favorite_border,
           color: Colors.blue.shade500,
         ),
       ),

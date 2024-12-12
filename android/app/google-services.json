@@ -9,10 +9,15 @@
       "client_info": {
         "mobilesdk_app_id": "1:1783737815:android:ebea0fa440093bedebef92",
         "android_client_info": {
-          "package_name": "com.ex"
+          "package_name": "com.example.myapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1783737815-pomk3nqhrlmicf0natefu745gnn31jq8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCjrdaGyjuh96E5WdI8MQ07izLv1oOxnZ8"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1783737815-pomk3nqhrlmicf0natefu745gnn31jq8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1783737815-pgg05lfs7t3dgt917s349grm2fuhrcrq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myapp"
+              }
+            }
+          ]
         }
       }
     }
