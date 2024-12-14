@@ -26,7 +26,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         body: StreamBuilder(
             stream:
                 // demo Collections
-                FirebaseFirestore.instance.collection("favorite").snapshots(),
+                FirebaseFirestore.instance.collection("favorites").snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshots) {
               if (snapshots.connectionState == ConnectionState.waiting) {

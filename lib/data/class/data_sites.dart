@@ -26,9 +26,7 @@ List<Sites> sitesTouristiques = [
         "L'île de Room, située dans l'archipel des îles de Loos au large de Conakry en Guinée, est une île de taille modeste mais riche en histoire et en beauté naturelle. Elle est connue pour ses plages de sable doré, ses eaux claires, et ses paysages verdoyants. Room est un lieu paisible où les visiteurs peuvent profiter de la nature, se baigner, ou encore faire de petites randonnées pour découvrir la végétation luxuriante.Autrefois, l'île a joué un rôle important dans le commerce colonial et porte encore les traces de cette époque, avec quelques vestiges de bâtiments historiques. Les habitants, pour la plupart pêcheurs, sont accueillants et offrent un aperçu de la vie locale et de la culture guinéenne.",
     imageUrls: [
       'https://img.freepik.com/photos-gratuite/photo-aerienne-maisons-construites-au-dessus-mer-terre-arbres-aux-maldives_181624-3473.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/station-bleu-vacances-voyage-paysage_1203-5301.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/vue-aerienne-belle-plage-tropicale_74190-6872.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/resort-sky-bay-voyage-exotique_1232-4572.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
+          
     ],
   ),
   Sites(
@@ -40,8 +38,6 @@ List<Sites> sitesTouristiques = [
     lieu: 'Iles de Loos',
     imageUrls: [
       'https://img.freepik.com/photos-gratuite/outdoor-parasol-chaise_74190-2386.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/magnifique-cocotier-plage-mer_74190-2015.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/vue-panoramique-plage-sable-plage-chaises-longues-parasols-ouverts-mer-montagnes-hotel-recours-tekirova-kemer-dinde_146671-18879.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
     ],
   ),
   Sites(
@@ -52,9 +48,6 @@ List<Sites> sitesTouristiques = [
         "La cascade de Soumba, située près de la ville de Dubréka à environ une heure de Conakry, est l'une des merveilles naturelles de la Guinée. Elle se distingue par ses chutes d'eau rafraîchissantes qui descendent en plusieurs paliers et créent de petits bassins parfaits pour la baignade. Entourée d'une végétation tropicale dense, la cascade offre un cadre paisible et enchanteur, idéal pour les amateurs de nature et de détente. C'est un lieu prisé pour les pique-niques, les randonnées et la découverte de la beauté naturelle guinéenne dans un environnement serein.",
     lieu: 'Iles de Loos',
     imageUrls: [
-      'https://img.freepik.com/photos-gratuite/waterscape-wet-coast-travel-propre-ete_1417-1103.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/celebre-cascade-choshi-otaki-dans-prefecture-aomori-au-japon_181624-36817.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/cascade-bateau-propre-chine-naturel-rural_1417-1356.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
           'https://img.freepik.com/photos-gratuite/china-natural-jungle-park-vietnam-summer_1417-1108.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
     ],
   ),
@@ -67,8 +60,7 @@ List<Sites> sitesTouristiques = [
     lieu: 'Iles de Loos',
     imageUrls: [
       'https://img.freepik.com/photos-gratuite/beau-paysage-montagne-par-journee-ensoleillee_23-2149063215.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-premium/cratere-argile-cicatrisante-volcanique-grise-trou-masse-amorphe-proeminente-profondeurs-terre-eruption-boue-gaz-temryuk-surface-du-sol-fissuree-texture-fissure-flux-boue_565632-7643.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/bateau-eau_1353-80.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
+
     ],
   ),
   Sites(
@@ -80,8 +72,6 @@ List<Sites> sitesTouristiques = [
     lieu: 'Iles de Loos',
     imageUrls: [
       'https://img.freepik.com/photos-gratuite/vue-aerienne-belle-petite-ile-verte-au-milieu-ocean_181624-2038.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/ile-maldives_1203-7358.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
-          'https://img.freepik.com/photos-gratuite/sirithan-beach-sandy-island-ao-nang-thailande_181624-457.jpg?uid=R146568229&ga=GA1.1.1987036454.1721222001&semt=ais_hybrid'
     ],
   ),
 ];

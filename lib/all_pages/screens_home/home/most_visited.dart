@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/all_pages/utils.dart';
 import 'package:myapp/data/data.dart';
 // import 'package:myapp/pages/utils.dart';
 
@@ -176,27 +177,7 @@ class DetailPage extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      Container(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade500,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Center(
-                            child: Text(
-                              'Reserver Maintenant',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      const Reserver(), // Boutton De Reservation
                     ],
                   )
                 ],
@@ -421,7 +402,6 @@ class MoreMostVisited extends StatelessWidget {
   }
 }
 
-
 class FavoriteButton extends StatefulWidget {
   const FavoriteButton({super.key, required this.site});
   final Sites site;
@@ -453,7 +433,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       DocumentReference userFavoritesRef = _firestore
           .collection('users')
           .doc(user.uid)
-          .collection('favorite')
+          .collection('favorites')
           .doc(widget.site.name);
 
       // Inverser l'état des favoris
@@ -470,7 +450,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           'etoile': widget.site.etoile,
           'lieu': widget.site.lieu,
           'imageUrls': widget.site.imageUrls,
-          'addedAt': FieldValue.serverTimestamp(),
+          // 'addedAt': FieldValue.serverTimestamp(),
         });
 
         // Afficher un message de confirmation

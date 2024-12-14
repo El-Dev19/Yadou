@@ -1,1 +1,55 @@
-{"firestore":{"rules":"firestore.rules","indexes":"firestore.indexes.json"},"emulators":{"auth":{"port":9099},"firestore":{"port":8080},"ui":{"enabled":true},"singleProjectMode":true},"flutter":{"platforms":{"android":{"default":{"projectId":"yadou-app","appId":"1:1783737815:android:ebea0fa440093bedebef92","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"yadou-app","configurations":{"android":"1:1783737815:android:ebea0fa440093bedebef92","ios":"1:1783737815:ios:38b742f181e42234ebef92","web":"1:1783737815:web:f29a0c8a02ea5255ebef92"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "yadou-app",
+          "appId": "1:1783737815:android:ebea0fa440093bedebef92",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "yadou-app",
+          "configurations": {
+            "android": "1:1783737815:android:ebea0fa440093bedebef92",
+            "ios": "1:1783737815:ios:38b742f181e42234ebef92",
+            "web": "1:1783737815:web:f29a0c8a02ea5255ebef92"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}
