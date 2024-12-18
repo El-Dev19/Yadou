@@ -1,0 +1,1 @@
+export 'notif_screen/notif.dart';

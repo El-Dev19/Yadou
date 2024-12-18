@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+import '../../../data/data.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class Reserver extends StatefulWidget {
   const Reserver({super.key});
@@ -10,231 +15,217 @@ class Reserver extends StatefulWidget {
 }
 
 class _ReserverState extends State<Reserver> {
-  void showReservationSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        final _formKey = GlobalKey<FormState>();
-        String name = '';
-        String email = '';
-        String phone = '';
-        String countryCode = '+224'; // Valeur par défaut
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _siteController = TextEditingController();
+  bool _isSubmitting = false;
 
-        return SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height / 1.1,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Confirmer la Réservation',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Nom',
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Entrez votre nom'
-                          : null,
-                      onSaved: (value) => name = value!,
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) =>
-                          value == null || !value.contains('@')
-                              ? 'Email invalide'
-                              : null,
-                      onSaved: (value) => email = value!,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: DropdownButtonFormField<String>(
-                            value: countryCode,
-                            decoration: const InputDecoration(
-                              labelText: 'Code',
-                              border: OutlineInputBorder(),
-                            ),
-                            items: [
-                              '+1',
-                              '+33',
-                              '+224',
-                              '+91',
-                              '+237'
-                            ] // Ajoute les codes nécessaires
-                                .map((code) => DropdownMenuItem(
-                                      value: code,
-                                      child: Text(code),
-                                    ))
-                                .toList(),
-                            onChanged: (value) => countryCode = value!,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 3,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Téléphone',
-                              border: OutlineInputBorder(),
-                            ),
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Entrez votre numéro'
-                                : null,
-                            onSaved: (value) => phone = value!,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade500,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          // Appelle la fonction pour envoyer l'email et la notification
-                          confirmReservation(
-                              context, name, email, '$countryCode' '$phone');
-                          // confirmReservation(name as BuildContext, email,
-                          //     '$countryCode $phone');
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: const Text('Confirmer la Réservation'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
+  @override
+  void initState() {
+    super.initState();
+    _initializeNotifications();
+  }
+
+  Future<void> _initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (response) {
+        debugPrint("Notification ouverte : ${response.payload}");
       },
     );
   }
 
-  void confirmReservation(
-      BuildContext context, String name, String email, String phone) async {
-    final sendEmail =
-        FirebaseFunctions.instance.httpsCallable('sendReservationEmail');
-
-    try {
-      await sendEmail({
-        'name': name,
-        'email': email,
-        'phone': phone,
+  Future<void> _submitReservation() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isSubmitting = true;
       });
 
-      // Message de succès
-      print('Email envoyé avec succès !');
-      _showSuccessDialog(context, 'Réservation Confirmée',
-          'Votre réservation a été confirmée et un email a été envoyé.');
-    } catch (e) {
-      // Gestion des erreurs
-      print('Erreur lors de l\'envoi de l\'email : $e');
-      _showErrorDialog(context, 'Erreur',
-          'Une erreur s\'est produite lors de l\'envoi de l\'email.');
-    }
-  }
+      try {
+        // Données de réservation
+        final reservationData = {
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+          'reservation_date': _dateController.text,
+          'created_at': DateTime.now(),
+          'siteName': _siteController.text,
+        };
 
-  void sendNotification(BuildContext context, String token, String name) async {
-    final sendNotif =
-        FirebaseFunctions.instance.httpsCallable('sendNotification');
+        // Enregistrer les données dans Firestore
+        await FirebaseFirestore.instance
+            .collection('reservations')
+            .add(reservationData);
 
-    try {
-      await sendNotif({
-        'token': token,
-        'name': name,
-      });
+        // Afficher une notification
+        await NotificationService.showNotification(
+          title: 'Réservation Confirmée',
+          body:
+              'Votre réservation pour le site est confirmée, ${_nameController.text} !',
+        );
 
-      // Message de succès
-      print('Notification envoyée avec succès !');
-      _showSuccessDialog(context, 'Notification Envoyée',
-          'Votre notification a été envoyée avec succès.');
-    } catch (e) {
-      // Gestion des erreurs
-      print('Erreur lors de l\'envoi de la notification : $e');
-      _showErrorDialog(context, 'Erreur',
-          'Une erreur s\'est produite lors de l\'envoi de la notification.');
-    }
-  }
-
-  void _showSuccessDialog(BuildContext context, String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
+        // Réinitialiser le formulaire
+        _formKey.currentState!.reset();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Réservation effectuée avec succès !')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur lors de la réservation : ${e.toString()}'),
           ),
-        ],
-      ),
-    );
-  }
-
-  void _showErrorDialog(BuildContext context, String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
+        );
+      } finally {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        height: 50,
-        width: MediaQuery.of(context).size.width / 1.3,
-        decoration: BoxDecoration(
-          color: Colors.blue.shade500,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: GestureDetector(
-          onTap: () => showReservationSheet(context),
-          child: Center(
-            child: Text(
-              'Réserver Maintenant',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Réservation'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Formulaire de réservation',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
+              const SizedBox(height: 20),
+              // Champ : Nom
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Votre Nom',
+                  hintText: 'Entrez votre nom',
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre nom.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _siteController,
+                decoration: const InputDecoration(
+                  labelText: 'Site Ou Service',
+                  hintText: 'Entrez le nom du site ou service',
+                  prefixIcon: Icon(Icons.home),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez Le nom du site ou service.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Champ : Email
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'E-mail',
+                  hintText: 'Entrez votre adresse e-mail',
+                  prefixIcon: Icon(Icons.email),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre adresse e-mail.';
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Veuillez entrer un e-mail valide.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Champ : Téléphone
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Téléphone',
+                  hintText: 'Entrez votre numéro de téléphone',
+                  prefixIcon: Icon(Icons.phone),
+                ),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre numéro de téléphone.';
+                  } else if (!RegExp(r'^\d{8,15}$').hasMatch(value)) {
+                    return 'Veuillez entrer un numéro valide.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Champ : Date de réservation
+              TextFormField(
+                controller: _dateController,
+                decoration: const InputDecoration(
+                  labelText: 'Date de réservation',
+                  hintText: 'Choisissez une date',
+                  prefixIcon: Icon(Icons.calendar_today),
+                ),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    _dateController.text =
+                        "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez choisir une date.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 30),
+
+              // Bouton de soumission
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isSubmitting ? null : _submitReservation,
+                  child: _isSubmitting
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text('Réserver'),
+                ),
+              ),
+            ],
           ),
         ),
       ),

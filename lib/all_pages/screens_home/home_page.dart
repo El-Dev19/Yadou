@@ -13,6 +13,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   final List<Widget> _pages = [
     SitesTouristiques(),
+    ReservationsPage(),
     FavoritesPage(),
     ProfilePage(),
   ];
@@ -37,6 +38,10 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         onTap: _onItemTapped,
         items: const [
           Icon(Icons.home, color: Colors.white),
+          Icon(
+            Icons.event_available,
+            color: Colors.white,
+          ),
           Icon(Icons.favorite, color: Colors.white),
           Icon(Icons.person, color: Colors.white),
         ],

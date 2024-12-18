@@ -168,6 +168,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   Row(
                     // crossAxisAlignment: CrossAxisAlignment.stretch,
+                    // mainAxisAlignment: MainAxisAlignment,
                     children: [
                       Material(
                         elevation: 5,
@@ -176,8 +177,28 @@ class DetailPage extends StatelessWidget {
                           child: FavoriteButton(site: site),
                         ),
                       ),
-                      const Spacer(),
-                      const Reserver(), // Boutton De Reservation
+                      const SizedBox(width: 10),
+                      // const Spacer(),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue.shade500,
+                            foregroundColor: Colors.white,
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius: BorderRadius.circular(10),
+                            // ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Reserver(),
+                              ),
+                            );
+                          },
+                          child: const Text("Book Now"),
+                        ),
+                      ), // Boutton De Reservation
                     ],
                   )
                 ],
