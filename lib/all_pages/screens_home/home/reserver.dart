@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../../data/data.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -51,13 +52,30 @@ class _ReserverState extends State<Reserver> {
       });
 
       try {
+        // Conversion de la date de réservation en Timestamp
+        Timestamp? reservationTimestamp =
+            _parseDateToTimestamp(_dateController.text);
+
+        if (reservationTimestamp == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('La date de réservation est invalide.'),
+            ),
+          );
+          setState(() {
+            _isSubmitting = false;
+          });
+          return;
+        }
+
         // Données de réservation
         final reservationData = {
           'name': _nameController.text,
           'email': _emailController.text,
           'phone': _phoneController.text,
-          'reservation_date': _dateController.text,
-          'created_at': DateTime.now(),
+          'reservation_date':
+              reservationTimestamp, // Date convertie en Timestamp
+          'created_at': Timestamp.now(), // Date actuelle en Timestamp
           'siteName': _siteController.text,
         };
 
@@ -89,6 +107,19 @@ class _ReserverState extends State<Reserver> {
           _isSubmitting = false;
         });
       }
+    }
+  }
+
+// Fonction pour convertir une chaîne en Timestamp
+  Timestamp? _parseDateToTimestamp(String dateText) {
+    try {
+      // Format attendu : "jour/mois/année"
+      DateFormat dateFormat = DateFormat("dd/MM/yyyy");
+      DateTime parsedDate = dateFormat.parse(dateText);
+      return Timestamp.fromDate(parsedDate); // Conversion en Timestamp
+    } catch (e) {
+      print("Erreur lors de la conversion de la date : $e");
+      return null; // Retourne null si la conversion échoue
     }
   }
 

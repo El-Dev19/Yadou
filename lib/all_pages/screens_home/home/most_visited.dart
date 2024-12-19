@@ -393,7 +393,15 @@ class MoreMostVisited extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const Reserver(),
+                                              ),
+                                            );
+                                          },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 Colors.blue.shade500,

@@ -92,7 +92,8 @@ class _ReservationsPageState extends State<ReservationsPage> {
               return Card(
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
-                  leading: const Icon(Icons.location_on, color: Colors.blue),
+                  leading:
+                      const Icon(Icons.event_available, color: Colors.blue),
                   title: Text(
                     siteName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -135,8 +136,8 @@ class _ReservationsPageState extends State<ReservationsPage> {
         String siteName = reservation['siteName'] ?? 'Nom indisponible';
         Timestamp reservationDate = reservation['reservation_date'];
         String readableDate = formatDate(reservationDate);
-        String description =
-            reservation['description'] ?? 'Pas de description disponible.';
+        // String description =
+        //     reservation['description'] ?? 'Pas de description disponible.';
 
         return AlertDialog(
           title: const Text("Détails de la réservation"),
@@ -147,8 +148,8 @@ class _ReservationsPageState extends State<ReservationsPage> {
               Text("Nom du site : $siteName"),
               const SizedBox(height: 8),
               Text("Date réservée : $readableDate"),
-              const SizedBox(height: 8),
-              Text("Description : $description"),
+              // const SizedBox(height: 8),
+              // Text("Description : $description"),
             ],
           ),
           actions: [
