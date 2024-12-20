@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 // Configuration de GoRouter
 final GoRouter _router = GoRouter(
   initialLocation: '/auth', // La route initiale

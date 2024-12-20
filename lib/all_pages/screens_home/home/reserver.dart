@@ -161,7 +161,7 @@ class _ReserverState extends State<Reserver> {
               TextFormField(
                 controller: _siteController,
                 decoration: const InputDecoration(
-                  labelText: 'Site Ou Service',
+                  labelText: 'Site/Service/autres',
                   hintText: 'Entrez le nom du site ou service',
                   prefixIcon: Icon(Icons.home),
                 ),

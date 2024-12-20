@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/all_pages/screens_home/home/reserver.dart';
 import 'package:myapp/data/class/bus_service.dart';
 import 'package:myapp/data/class/flight_services.dart';
 import 'package:myapp/data/class/hotel_service.dart';
@@ -25,22 +26,23 @@ class ServicesPro extends StatelessWidget {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(servicesAll[index].icone.icon, color: Colors.blue),
-                        const Spacer(),
-                        Text(
-                          servicesAll[index].name,
-                          style: TextStyle(fontSize: 12),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade100,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(servicesAll[index].icone.icon, color: Colors.blue),
+                      const Spacer(),
+                      Text(
+                        servicesAll[index].name,
+                        style: TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           );
@@ -162,8 +164,7 @@ class FlightCard extends StatelessWidget {
       children: flightAll
           .map(
             (Flight) => GestureDetector(
-                onTap: () {
-                },
+                onTap: () {},
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16, left: 16),
                   child: Card(
@@ -222,7 +223,15 @@ class FlightCard extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Reserver(),
+                                          ),
+                                        );
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blue.shade500,
                                       ),
@@ -297,8 +306,7 @@ class HotelCard extends StatelessWidget {
       children: hoteltAll
           .map(
             (Hotels) => GestureDetector(
-                onTap: () {
-                },
+                onTap: () {},
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16, left: 16),
                   child: Card(
@@ -357,7 +365,15 @@ class HotelCard extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Reserver(),
+                                          ),
+                                        );
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blue.shade500,
                                       ),
@@ -432,8 +448,7 @@ class TrainCard extends StatelessWidget {
       children: traintAll
           .map(
             (Trains) => GestureDetector(
-                onTap: () {
-                },
+                onTap: () {},
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16, left: 16),
                   child: Card(
@@ -492,7 +507,15 @@ class TrainCard extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Reserver(),
+                                          ),
+                                        );
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blue.shade500,
                                       ),
@@ -519,7 +542,7 @@ class TrainCard extends StatelessWidget {
   }
 }
 
-class BusPage extends StatelessWidget { 
+class BusPage extends StatelessWidget {
   // final Flight flight;
   const BusPage({super.key});
 
@@ -567,8 +590,7 @@ class BusCard extends StatelessWidget {
       children: busAll
           .map(
             (BusService) => GestureDetector(
-                onTap: () {
-                },
+                onTap: () {},
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16, left: 16),
                   child: Card(
@@ -627,7 +649,15 @@ class BusCard extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Reserver(),
+                                          ),
+                                        );
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blue.shade500,
                                       ),
